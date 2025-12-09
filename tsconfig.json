@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Environment Settings
+    "module": "nodenext",
+    "target": "esnext",
+    "types": ["node"],
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "strictNullChecks": true, // ✅ Added this
+    "strict": true, // optional, can remove if you only want strictNullChecks
+
+    // Style Options
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+
+    // Recommended Options
+    "jsx": "react-jsx",
+    // "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  }
+}
