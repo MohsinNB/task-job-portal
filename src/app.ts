@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 import authRoutes from "./routes/auth.route";
 import jobRoutes from "./routes/job.routes";
-import uploadRoutes from "./routes/upload.route";
+
 import ApplicationRoutes from "./routes/application.route";
 import adminRoutes from "./routes/admin.route";
 const app = express();
@@ -12,7 +12,6 @@ app.use(cookieParser());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
-app.use("/api/upload", uploadRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/application", ApplicationRoutes);
 app.use("/api/admin", adminRoutes);

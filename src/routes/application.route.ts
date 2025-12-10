@@ -5,6 +5,7 @@ import { roleMiddleware } from "../middlewares/role.middleware";
 import { validateRequest } from "../middlewares/validateRequest";
 import { applyJobSchema } from "../validations/application.validation";
 import { uploadCV } from "../utils/multerLocal";
+import { multerErrorHandler } from "../middlewares/multerErrorHandler";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.post(
   authMiddleware,
   roleMiddleware(["jobSeeker"]),
   uploadCV.single("cv"),
+  multerErrorHandler,
   validateRequest(applyJobSchema),
   controller.applyToJob
 );
