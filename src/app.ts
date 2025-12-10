@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.route";
 import jobRoutes from "./routes/job.routes";
 import uploadRoutes from "./routes/upload.route";
 import ApplicationRoutes from "./routes/application.route";
+import adminRoutes from "./routes/admin.route";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -14,6 +15,7 @@ app.use("/api/job", jobRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/application", ApplicationRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({

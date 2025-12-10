@@ -1,0 +1,287 @@
+{
+  "info": {
+    "_postman_id": "hireme-backend-collection-2025",
+    "name": "HireMe Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@test.com\",\n  \"password\": \"123456\",\n  \"role\": \"jobSeeker\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@test.com\",\n  \"password\": \"123456\"\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Upload CV (local)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/upload/cv",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "cv",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/jobs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Frontend Developer\",\n  \"description\": \"React dev needed\",\n  \"company\": \"ABC Ltd\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Jobs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/jobs"
+          }
+        },
+        {
+          "name": "Update Job",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/jobs/{{jobId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Job Title\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" }
+            ],
+            "url": "{{base_url}}/api/jobs/{{jobId}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Application",
+      "item": [
+        {
+          "name": "Apply to Job",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/application/apply/{{jobId}}",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "cv",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "paymentMethod",
+                  "value": "mock",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Job Applicants (Recruiter)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" }
+            ],
+            "url": "{{base_url}}/api/application/job/{{jobId}}"
+          }
+        },
+        {
+          "name": "Accept Application",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" }
+            ],
+            "url": "{{base_url}}/api/application/accept/{{applicationId}}"
+          }
+        },
+        {
+          "name": "Reject Application",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{employee_token}}" }
+            ],
+            "url": "{{base_url}}/api/application/reject/{{applicationId}}"
+          }
+        },
+        {
+          "name": "My Applications (JobSeeker)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/application/my"
+          }
+        },
+        {
+          "name": "Admin - All Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/application/admin/all"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin - List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/users"
+          }
+        },
+        {
+          "name": "Admin - Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/admin/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Created User\",\n  \"email\": \"adminuser@test.com\",\n  \"password\": \"123456\",\n  \"role\": \"employee\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Admin - Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/admin/users/{{userId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Admin - Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Admin - Jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/jobs"
+          }
+        },
+        {
+          "name": "Admin - Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/applications"
+          }
+        },
+        {
+          "name": "Admin - Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": "{{base_url}}/api/admin/analytics"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" },
+    { "key": "employee_token", "value": "" },
+    { "key": "admin_token", "value": "" },
+    { "key": "jobId", "value": "" },
+    { "key": "applicationId", "value": "" },
+    { "key": "userId", "value": "" }
+  ]
+}
