@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import authRoutes from "./routes/auth.route";
 import jobRoutes from "./routes/job.routes";
 import uploadRoutes from "./routes/upload.route";
+import ApplicationRoutes from "./routes/application.route";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -11,6 +12,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/application", ApplicationRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({

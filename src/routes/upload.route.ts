@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadCV } from "../utils/multer";
+import { uploadCV } from "../utils/multerLocal";
 import { multerErrorHandler } from "../middlewares/multerErrorHandler";
 import { uploadCVController } from "../controllers/upload.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
