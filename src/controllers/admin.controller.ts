@@ -1,6 +1,7 @@
 // src/controllers/admin.controller.ts
 import { Request, Response } from "express";
 import * as adminSvc from "../services/admin.service";
+import { User } from "../models/user.model";
 
 export const listUsers = async (req: Request, res: Response) => {
   const { page = "1", limit = "20", role, company } = req.query as any;
@@ -32,9 +33,11 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
+  const userId = req.params.id;
   try {
-    await adminSvc.deleteUser(req.params.id);
-    res.json({ success: true });
+    const user = await User.findById(userId);
+    await adminSvc.deleteUser(userId);
+    res.json({ success: true, user: user });
   } catch (e: any) {
     res.status(400).json({ success: false, message: e.message });
   }
@@ -52,14 +55,21 @@ export const listJobs = async (req: Request, res: Response) => {
 };
 
 export const listApplications = async (req: Request, res: Response) => {
-  const { page = "1", limit = "20", company, status } = req.query as any;
+  const {
+    page = "1",
+    limit = "20",
+    company,
+    status,
+    search,
+  } = req.query as any;
   const data = await adminSvc.listApplications({
     page: Number(page),
     limit: Number(limit),
     company,
     status,
+    search,
   });
-  res.json({ success: true, ...data });
+  return res.json({ success: true, ...data });
 };
 
 export const analytics = async (req: Request, res: Response) => {

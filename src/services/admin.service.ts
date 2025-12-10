@@ -1,5 +1,5 @@
 // src/services/admin.service.ts
-import { User } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import { Job } from "../models/job.model";
 import { Application } from "../models/application.model";
 import { Invoice } from "../models/invoice.model";
@@ -30,30 +30,15 @@ export const listUsers = async ({
   return { users, total, page, limit };
 };
 
-export const createUser = async (data: {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  company?: string;
-}) => {
+export const createUser = async (data: Partial<IUser>) => {
   const exists = await User.findOne({ email: data.email });
   if (exists) throw new Error("Email already exists");
-  const hashed = await hashPassword(data.password);
+  const hashed = await hashPassword(data.password as string);
   const user = await User.create({ ...data, password: hashed });
   return user.toObject();
 };
 
-export const updateUser = async (
-  id: string,
-  data: Partial<{
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    company?: string;
-  }>
-) => {
+export const updateUser = async (id: string, data: Partial<IUser>) => {
   if (data.password) data.password = await hashPassword(data.password);
   const user = await User.findByIdAndUpdate(id, data, { new: true }).select(
     "-password"
@@ -78,22 +63,33 @@ export const listJobs = async ({
   limit = 20,
   company,
   status,
+  search,
 }: {
   page?: number;
   limit?: number;
   company?: string;
   status?: string;
+  search?: string;
 }) => {
   const filter: any = {};
   if (company) filter.company = company;
-  if (status) filter.status = status;
+  if (status) filter.status = status; // "open" | "closed"
+  if (search) {
+    const re = new RegExp(search, "i");
+    filter.$or = [{ title: re }, { description: re }, { company: re }];
+  }
+
   const skip = (page - 1) * limit;
-  const jobs = await Job.find(filter)
-    .skip(skip)
-    .limit(limit)
-    .populate("createdBy", "name email company")
-    .lean();
-  const total = await Job.countDocuments(filter);
+  const [jobs, total] = await Promise.all([
+    Job.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate("createdBy", "name email company")
+      .sort({ createdAt: -1 })
+      .lean(),
+    Job.countDocuments(filter),
+  ]);
+
   return { jobs, total, page, limit };
 };
 
@@ -103,30 +99,104 @@ export const listApplications = async ({
   limit = 20,
   company,
   status,
+  search,
 }: {
   page?: number;
   limit?: number;
   company?: string;
   status?: string;
+  search?: string;
 }) => {
   const match: any = {};
-  if (status) match.status = status;
 
-  // if company filter provided: find jobs of that company first
+  // If admin wants to filter by application status
+  if (status && ["applied", "accepted", "rejected"].includes(status)) {
+    match.status = status;
+  }
+
+  // If company filter provided: restrict by jobs of that company
   if (company) {
-    const jobs = await Job.find({ company }).select("_id").lean();
-    const jobIds = jobs.map((j) => j._id);
+    // fetch job ids belonging to company
+    const jobIds = await Job.find({ company })
+      .select("_id")
+      .lean()
+      .then((rows) => rows.map((r) => r._id));
+    if (jobIds.length === 0) {
+      // no jobs -> return empty
+      return { applications: [], total: 0, page, limit };
+    }
     match.jobId = { $in: jobIds };
   }
 
-  const skip = (page - 1) * limit;
-  const applications = await Application.find(match)
-    .skip(skip)
-    .limit(limit)
-    .populate("applicantId", "name email")
-    .populate("jobId", "title company")
-    .lean();
-  const total = await Application.countDocuments(match);
+  // optional text search (applicant name or job title)
+  const aggregatePipeline: any[] = [
+    { $match: match },
+    // join applicant and job for filtering & projection
+    {
+      $lookup: {
+        from: "users",
+        localField: "applicantId",
+        foreignField: "_id",
+        as: "applicant",
+      },
+    },
+    { $unwind: "$applicant" },
+    {
+      $lookup: {
+        from: "jobs",
+        localField: "jobId",
+        foreignField: "_id",
+        as: "job",
+      },
+    },
+    { $unwind: "$job" },
+  ];
+
+  if (search) {
+    const re = new RegExp(search, "i");
+    aggregatePipeline.push({
+      $match: {
+        $or: [
+          { "applicant.name": re },
+          { "applicant.email": re },
+          { "job.title": re },
+          { "job.company": re },
+        ],
+      },
+    });
+  }
+
+  // count and paginate
+  const countPipeline = [...aggregatePipeline, { $count: "total" }];
+  const dataPipeline = [
+    ...aggregatePipeline,
+    { $sort: { createdAt: -1 } },
+    { $skip: (page - 1) * limit },
+    { $limit: limit },
+    // project only needed fields
+    {
+      $project: {
+        _id: 1,
+        status: 1,
+        paymentStatus: 1,
+        cvUrl: 1,
+        createdAt: 1,
+        "applicant._id": 1,
+        "applicant.name": 1,
+        "applicant.email": 1,
+        "job._id": 1,
+        "job.title": 1,
+        "job.company": 1,
+      },
+    },
+  ];
+
+  const [countRes, applications] = await Promise.all([
+    Application.aggregate(countPipeline),
+    Application.aggregate(dataPipeline),
+  ]);
+
+  const total = countRes[0] && countRes[0].total ? countRes[0].total : 0;
   return { applications, total, page, limit };
 };
 
