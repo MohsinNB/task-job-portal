@@ -200,3 +200,4 @@ job.validation.ts
 🔌API Base URL: http://localhost:5000
 
 Postman Documentation: https://documenter.getpostman.com/view/48236174/2sB3dSP8Yu
+ERD: https://dbdiagram.io/d/HireME-job-portal-6939d7d2e877c6307458eaaa
