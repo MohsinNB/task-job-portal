@@ -1,6 +1,7 @@
 // src/types/enums.ts
 
 export enum UserRole {
+  SUPER_ADMIN = "super_admin",
   ADMIN = "admin",
   EMPLOYEE = "employee",
   JOB_SEEKER = "jobSeeker",

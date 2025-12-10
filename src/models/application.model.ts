@@ -1,7 +1,7 @@
 // src/models/Application.model.ts
 
 import { Schema, model, Document, Types } from "mongoose";
-import { ApplicationStatus, PaymentStatus } from "../types/enums.js";
+import { ApplicationStatus, PaymentStatus } from "../types/enums";
 
 export interface IApplication extends Document {
   jobId: Types.ObjectId;

@@ -1,25 +1,29 @@
 import { Server } from "http";
 
 import mongoose from "mongoose";
-import app from "./app.js";
-import { envVars } from "./app/config/env.js";
+import app from "./app";
+import { DB_URL, PORT } from "./app/config/env";
+import { seedSuperAdmin } from "./utils/seedSuperAdmin";
 
 let server: Server;
 
 const startServer = async () => {
   try {
-    await mongoose.connect(envVars.DB_URL);
+    await mongoose.connect(DB_URL);
 
     console.log("Connected To database");
-    server = app.listen(envVars.PORT, () => {
-      console.log(`Server is listening on port ${envVars.PORT}`);
+    server = app.listen(PORT, () => {
+      console.log(`Server is listening on port ${PORT}`);
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-startServer();
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 process.on("SIGTERM", () => {
   if (server) {

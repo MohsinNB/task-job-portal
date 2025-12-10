@@ -1,53 +1,27 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
-interface EnvConfig {
-  PORT: string;
-  DB_URL: string;
-  NODE_ENV: "development" | "production";
-  BCRYPT_SALT_ROUND: string;
-  JWT_ACCESS_SECRET: string;
-  JWT_ACCESS_EXPIRES: string;
-  JWT_REFRESH_SECRET: string;
-  JWT_REFRESH_EXPIRES: string;
-  SUPER_ADMIN_EMAIL: string;
-  SUPER_ADMIN_PASSWORD: string;
-  FRONTEND_URL: string;
-}
-const loadEnvVariables = (): EnvConfig => {
-  const requiredEnvVariables: string[] = [
-    "PORT",
-    "DB_URL",
-    "NODE_ENV",
-    "BCRYPT_SALT_ROUND",
-    "JWT_ACCESS_SECRET",
-    "JWT_ACCESS_EXPIRES",
-    "JWT_REFRESH_SECRET",
-    "JWT_REFRESH_EXPIRES",
-    "SUPER_ADMIN_EMAIL",
-    "SUPER_ADMIN_PASSWORD",
-    "FRONTEND_URL",
-  ];
-
-  requiredEnvVariables.forEach((key) => {
-    if (!process.env[key]) {
-      throw new Error(`missing required environment variable ${key}`);
-    }
-  });
-  return {
-    PORT: process.env.PORT as string,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    DB_URL: process.env.DB_URL!,
-    NODE_ENV: process.env.NODE_ENV as "development" | "production",
-    BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND as string,
-    JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET as string,
-    JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES as string,
-    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
-    JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES as string,
-    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
-    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
-    FRONTEND_URL: process.env.FRONTEND_URL as string,
-  };
+const get = (k: string, fallback?: string): string => {
+  const v = process.env[k];
+  if (v === undefined) {
+    if (fallback !== undefined) return fallback;
+    throw new Error(`Missing required environment variable: ${k}`);
+  }
+  return v;
 };
-export const envVars = loadEnvVariables();
+
+export const JWT_ACCESS_SECRET = get("JWT_ACCESS_SECRET");
+export const JWT_ACCESS_EXPIRES = get("JWT_ACCESS_EXPIRES", "1d");
+export const JWT_REFRESH_SECRET = get("JWT_REFRESH_SECRET");
+export const JWT_REFRESH_EXPIRES = get("JWT_REFRESH_EXPIRES", "30d");
+
+export const BCRYPT_SALT_ROUND: number = Number(get("BCRYPT_SALT_ROUND", "10"));
+
+export const PORT: number = Number(get("PORT", "3000")); // Example of another conversion
+export const DB_URL = get("DB_URL");
+export const FRONTEND_URL = get("FRONTEND_URL");
+export const SUPER_ADMIN_EMAIL = get("SUPER_ADMIN_EMAIL");
+export const SUPER_ADMIN_PASSWORD = get("SUPER_ADMIN_PASSWORD");
+export const NODE_ENV = get("NODE_ENV", "development") as
+  | "development"
+  | "production";

@@ -1,7 +1,7 @@
 // src/models/User.model.ts
 
 import { Schema, model, Document } from "mongoose";
-import { UserRole } from "../types/enums.js";
+import { UserRole } from "../types/enums";
 
 export interface IUser extends Document {
   name: string;
@@ -22,7 +22,13 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(UserRole),
       default: UserRole.JOB_SEEKER,
     },
-    company: { type: String },
+    company: {
+      type: String,
+
+      required: function (this: IUser) {
+        return this.role === UserRole.EMPLOYEE;
+      },
+    },
   },
   { timestamps: true }
 );

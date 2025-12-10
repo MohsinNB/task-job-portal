@@ -1,7 +1,7 @@
 // src/models/Job.model.ts
 
 import { Schema, model, Document, Types } from "mongoose";
-import { JobStatus } from "../types/enums.js";
+import { JobStatus } from "../types/enums";
 
 export interface IJob extends Document {
   title: string;
