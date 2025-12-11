@@ -1,8 +1,5 @@
-// src/controllers/auth.controller.ts
 import { Request, Response } from "express";
-
 import * as authService from "../services/auth.service";
-
 export async function signup(req: Request, res: Response) {
   try {
     const { name, email, password, role, company } = req.body;
@@ -30,7 +27,6 @@ export async function login(req: Request, res: Response) {
     const { user, tokens } = await authService.loginUser(email, password);
 
     // send tokens (example: send access token in body, refresh token as httpOnly cookie)
-    // Here we set refresh token as HttpOnly cookie - adjust to your frontend
     res.cookie("refreshToken", tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -79,14 +75,29 @@ export async function refresh(req: Request, res: Response) {
   }
 }
 
+// auth.controller.ts
+import { logoutUser } from "../services/auth.service";
+
 export async function logout(req: Request, res: Response) {
   try {
-    // client should clear access token and cookie
-    res.clearCookie("refreshToken");
-    // optionally revoke server-side
-    return res.json({ success: true });
+    const userId = req.user?.id as string; // If you attach user during auth middleware
+
+    await logoutUser(userId);
+
+    // Remove refresh token cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    // Client must clear access token (stored in localStorage/memory)
+    return res.json({ success: true, message: "Logged out successfully" });
   } catch (err: any) {
-    return res.status(500).json({ success: false, message: "Logout failed" });
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+    });
   }
 }
 

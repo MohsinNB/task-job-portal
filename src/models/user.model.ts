@@ -1,5 +1,3 @@
-// src/models/User.model.ts
-
 import { Schema, model, Document } from "mongoose";
 import { UserRole } from "../types/enums";
 

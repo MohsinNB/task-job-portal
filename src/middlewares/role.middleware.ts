@@ -1,4 +1,3 @@
-// src/middlewares/role.middleware.ts
 import { Request, Response, NextFunction } from "express";
 
 export function roleMiddleware(allowedRoles: string[]) {

@@ -1,4 +1,3 @@
-// src/services/admin.service.ts
 import { IUser, User } from "../models/user.model";
 import { Job } from "../models/job.model";
 import { Application } from "../models/application.model";
@@ -50,7 +49,7 @@ export const updateUser = async (id: string, data: Partial<IUser>) => {
 export const deleteUser = async (id: string) => {
   const user = await User.findByIdAndDelete(id);
   if (!user) throw new Error("User not found");
-  // optional: cleanup jobs/applications/invoices tied to user
+  // cleanup jobs/applications/invoices tied to user
   await Job.deleteMany({ createdBy: id }).catch(() => {});
   await Application.deleteMany({ applicantId: id }).catch(() => {});
   await Invoice.deleteMany({ user: id }).catch(() => {});

@@ -1,4 +1,3 @@
-// src/routes/admin.routes.ts
 import { Router } from "express";
 import * as adminCtrl from "../controllers/admin.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";

@@ -1,5 +1,3 @@
-// src/models/Job.model.ts
-
 import { Schema, model, Document, Types } from "mongoose";
 import { JobStatus } from "../types/enums";
 

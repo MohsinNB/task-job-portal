@@ -18,7 +18,7 @@ app.use("/api/admin", adminRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
-    message: "Welcome to Job portal website",
+    message: "HireMe-app is running",
   });
 });
 

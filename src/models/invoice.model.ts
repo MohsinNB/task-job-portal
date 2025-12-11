@@ -1,5 +1,3 @@
-// src/models/Invoice.model.ts
-
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface IInvoice extends Document {

@@ -1,4 +1,3 @@
-// src/routes/auth.routes.ts
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
@@ -11,7 +10,7 @@ const router = Router();
 router.post("/signup", validateRequest(signupSchema), authController.signup);
 router.post("/login", validateRequest(loginSchema), authController.login);
 router.post("/refresh", authController.refresh);
-router.post("/logout", authController.logout);
+router.post("/logout", authMiddleware, authController.logout);
 
 /** Protected example */
 router.get("/me", authMiddleware, authController.me);

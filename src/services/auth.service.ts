@@ -38,9 +38,8 @@ export async function signupUser(data: {
   return { user };
 }
 
-/**
- * Login user: returns tokens
- */
+//Login user: returns tokens
+
 export async function loginUser(
   email: string,
   password: string

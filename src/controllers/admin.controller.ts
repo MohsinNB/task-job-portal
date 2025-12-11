@@ -1,4 +1,3 @@
-// src/controllers/admin.controller.ts
 import { Request, Response } from "express";
 import * as adminSvc from "../services/admin.service";
 import { User } from "../models/user.model";
