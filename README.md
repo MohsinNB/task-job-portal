@@ -184,6 +184,43 @@ FRONTEND_URL=http://localhost:5173
 
 🔌API Base URL: `http://localhost:5000`
 
+### Api live URL: `https://task-job-portal-1.onrender.com/`
+
+## API Endpoints
+
+### Auth
+
+- POST /api/auth/signup → Register new user
+- POST /api/auth/login → Login user
+
+### Jobs
+
+- GET /api/job/all-jobs → Get all jobs(public)
+- POST /api/job/create-job → Create a new job (Employee only)
+- PUT /api/job/:id → update job(Employee only)
+- DELETE /api/job/:id → Delete job(Employee only)
+
+### Applications
+
+- POST /api/application/apply/:jobId → Apply for a job(jobseeker)
+- GET /api/application/job/:jobId → view Application(Employee)
+- PUT /api/application/accept/:id → Accept Application(Employee)
+- PUT /api/application/reject/:id → Reject Application(Employee)
+- GET /api/application/my → view own application (jobseeker)
+- GET /api/application/admin/all → Get all applications (Admin only)
+
+### Admin
+
+#### All api are protected by admin role
+
+- GET /api/admin/users → Get all users
+- POST /api/admin/users → Create user
+- PUT /api/admin/users/:id → Update user
+- DELETE /api/admin/users/:id → Delete user
+- GET /api/admin/jobs → get all jobs
+- GET /api/admin/applications → get all applications
+- GET /api/admin/analytics → get all analytics
+
 ### Postman Documentation:
 
 [![Postman Documentation](https://img.shields.io/badge/Postman-API%20Docs-orange?logo=postman)](https://documenter.getpostman.com/view/48236174/2sB3dSP8Yu)
