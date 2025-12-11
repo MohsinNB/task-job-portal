@@ -191,18 +191,22 @@ FRONTEND_URL=http://localhost:5173
 ### 📌 ERD Diagram (PDF)
 
 You can view the ERD here:
-[Open ERD](./docs/HireME-job-portal.pdf)
+[Open ERD](https://raw.githubusercontent.com/MohsinNB/task-job-portal/main/docs/HireME-job-portal.pdf)
 
 #### Tables:
 
+```text
 -users
 -jobs
 -applications
 -invoices
+```
 
 #### Relationships:
 
+```text
 -jobs.createdBy → users.\_id
 -applications.jobId → jobs.\_id
 -applications.applicantId → users.\_id
 -invoices.user → users.\_id
+```
